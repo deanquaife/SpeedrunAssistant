@@ -1,3 +1,5 @@
+#main.py: contains main method; performs actual menu navigation
+
 from menus import menuPracticeChoice, menuTopLevel, quitChoice
 from exceptions import ChoiceException
 from assistant import escapeAssistant, kakOwlSkipAssistant

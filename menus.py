@@ -1,3 +1,5 @@
+#menus.py: contains functions used for menu navigation throughout the assistant
+
 from exceptions import ChoiceException
 
 #top level options; returns an int
