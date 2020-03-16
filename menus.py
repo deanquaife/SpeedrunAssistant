@@ -1,28 +1,37 @@
-#menus.py: contains functions used for menu navigation throughout the assistant
-
+#menus.py: contains generic functions used for menu navigation throughout the assistant
 from exceptions import ChoiceException
+from OOTmenus import ootAreaMenu
 
-#top level options; returns an int
-def menuTopLevel():
-    print("===== Speedrun practice assistant =====\n1. Start new session\n2. Quit")
-    keys = input()
-    if keys != "1" and keys != "2":
+#top level options; handles exceptions caused by submenus
+def topLevelMenu():
+    while True:
+        keys = input("===== Speedrun practice assistant =====\n1. Legend of Zelda: OoT\n0. Quit\n")
+        if keys == "1": #OOT
+            error = True
+            while error:
+                try:
+                    ootAreaMenu()
+                    error = False
+                except ChoiceException:
+                    print("Invalid option.")
+        elif keys == "0": #quit after confirmation
+            error = True
+            while error:
+                try:
+                    quitMenu()
+                    error = False
+                except ChoiceException:
+                    print("Choice is Y or N.")
+        else: #all other cases; will print error message and loop back to menu
+            print("Invalid option.")
+
+#quit confirmation; returns a string so that different callers can perform different actions
+def quitMenu():  
+    keys = input("Are you sure you want to quit? Y/N\n")
+    if keys == "y" or keys == "Y":
+        print("Goodbye!")
+        exit()
+    elif keys == "n" or keys == "N":
+        pass
+    else:
         raise ChoiceException
-    return int(keys)
-
-#practice menu options; returns an int
-def menuPracticeChoice():
-    print("What are you practising?\n1. Forest escape\n2. Kak owl skip\n3. Chickens\n4. Bottom of the Well\n0. Go back")
-    keys = input()
-    if keys != "1" and keys != "2" and keys != "0":
-        raise ChoiceException
-    return int(keys)
-
-#quit confirmation; returns a string
-def quitChoice():
-    print("Are you sure you want to quit? Y/N")    
-    keys = input()
-    if keys != "y" and keys != "Y" and keys != "n" and keys != "N":
-        raise ChoiceException
-    return keys
-

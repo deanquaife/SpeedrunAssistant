@@ -1,15 +1,31 @@
-#assistant.py: Contains the actual assistant and its wrapper functions
+#assistant.py: Contains the actual assistant and its wrapper function
 
-#Speedrun assistant is run in the baseAssistant function. This function is not called from
-#outside this class; instead it is called by other wrapper functions in this class for each
-#trick which are in turn called from main(). The wrapper functions provide optional arguments
-#which allow for more information tracking about the trick.
-
-from menus import quitChoice
+#Speedrun assistant is run in assistant(). assistantWrapper() is called elsewhere in the
+#program and is provided with a string describing the current trick. The user is given the
+#option to specify extra parameters to track during the session, then assistantWrapper()
+#passes control to assistant(), where the actual tracking is done.
 from exceptions import ChoiceException
 
+#wrapper function for assistant; takes a string when it is called elsewhere in the program and gives the user the choice to track extra parameters in the assistant
+def assistantWrapper(trickName):
+    #helper function to build list of extra parameters to assistant if any are input
+    def list_Maker(params, keys):
+        params.append(keys)
+        if len(params) < 2: #if max allowed parameters is reached, stop
+            keys = input(f"Type an extra parameter to track or just press enter(Max 2, current {str(len(params))})")
+            if keys != "": #if user does not want more parameters, stop
+                list_Maker(params, keys)
+    
+    print(f"====================\n{trickName}\n====================")
+    keys = input("Type an extra parameter to track or just press enter(Max 2)")
+    params = []
+    if keys != "": #if there are extra params, switch to helper function
+        list_Maker(params, keys)
+    assistant(params)
+    print("====================\n")
+
 #base assistant; used by all other assistants
-def baseAssistant(params):
+def assistant(params):
     print("====================\nType 'H' for commands")
     attempts = 0
     success = 0
@@ -25,14 +41,8 @@ def baseAssistant(params):
     while True:
         keys = input() 
         if keys == "q" or keys == "Q": #user wants to quit
-            error = True
-            while error:
-                try:
-                    keys = quitChoice()
-                    error = False
-                except ChoiceException:
-                    print("Choice is Y or N. Try again.")
-            if keys == "y" or keys == "Y": #if Y, return to main menu. if N, do nothing
+            keys = input("Press enter to confirm, type another key to cancel.\n")
+            if keys == "": #if enter, return to main menu. if not, do nothing
                 break
         elif keys == "": #successful attempt
             attempts += 1
@@ -112,36 +122,6 @@ def baseAssistant(params):
                 print(f"Attempt with {params[1]}: 2")
             except IndexError:
                 pass
-            print("Quit: Q")
+            print("Quit and return to region select: Q")
         else:
             print("Bad input, try again.")
-
-#helper function to build list of extra parameters to baseAssistant if any are input
-def list_Maker(params, keys):
-    params.append(keys)
-    if len(params) < 2: #if max allowed parameters is reached, stop
-        keys = input(f"Type an extra parameter to track or just press enter(Max 2, current {str(len(params))})")
-        if keys != "": #if user does not want more parameters, stop
-            list_Maker(params, keys)
-
-#Kokiri forest escape wrapper
-def escapeAssistant():
-    print("====================\nEscape\n====================")
-    keys = input("Type an extra parameter to track or just press enter(Max 2)")
-    params = []
-    if keys != "": #if there are extra params, switch to helper function
-        list_Maker(params, keys)
-    
-    baseAssistant(params)
-    print("Returning to main menu.\n")
-
-#Kakariko owl skip wrapper
-def kakOwlSkipAssistant():
-    print("====================\nKak Owl Skip\n====================")
-    keys = input("Type an extra parameter to track or just press enter(Max 2)")
-    params = []
-    if keys != "": #if there are extra params, switch to helper function
-        list_Maker(params, keys)
-
-    baseAssistant(params)
-    print("Returning to main menu.\n")
