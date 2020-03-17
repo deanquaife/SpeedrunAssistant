@@ -1,4 +1,6 @@
 #assistant.py: Contains the actual assistant and its wrapper function
+#Author: Dean Quaife
+#last edited: 2020/03/17
 
 #Speedrun assistant is run in assistant(). assistantWrapper() is called elsewhere in the
 #program and is provided with a string describing the current trick. The user is given the
