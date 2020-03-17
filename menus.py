@@ -1,8 +1,10 @@
 #menus.py: contains generic functions used for menu navigation throughout the assistant
+#Author: Dean Quaife
+#last edited: 2020/03/17
 from exceptions import ChoiceException
 from assistant import assistantWrapper
 
-#future use; area menu uses values in this list, values used as keys for trickDict, trick menu uses key to display values from trickDict
+#regionList values match keys in trickDict. Both are used to construct game-specific menus
 regionList = ["Kokiri Forest", "Hyrule Field", "Kakariko Village"]
 trickDict = {
     "Kokiri Forest": ["Escape"],

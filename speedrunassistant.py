@@ -1,7 +1,9 @@
-#main.py: main entry point for program
+#speedrunassistant.py: main entry point for program
+#Author: Dean Quaife
+#last edited: 2020/03/17
 from menus import topLevelMenu
 
-#main method
+#to main menu
 def speedrunAssistant():
     topLevelMenu()
 
