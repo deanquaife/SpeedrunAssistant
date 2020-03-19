@@ -58,20 +58,34 @@ def assistant(params):
             attempts += 1
             try:
                 params[0] #check whether params exist
-                paramNo = 1
-                print("Where did you fail?")
-                for param in params:
-                    print(f"{paramNo}. {param}")
-                    paramNo += 1
-                subkey = input()
+            except IndexError: #there are no params to track
+                print("failed")
+            else:
+                error = True
+                while error:
+                    try:
+                        paramNo = 1
+                        print("Where did you fail?")
+                        for param in params:
+                            print(f"{paramNo}. {param}")
+                            paramNo += 1
+                        subkey = input()
+                        params[int(subkey) - 1] #sanitises input
+                        if int(subkey) == 0: #params[-1] won't raise an IndexError
+                            print("Number must be one of the parameters displayed.")
+                        else:
+                            error = False
+                    except ValueError:
+                        print("Input must be a number.")
+                    except IndexError:
+                        print("Number must be one of the parameters displayed.")
                 index = 0
                 while (index < int(subkey) - 1):
                     paramsAttempts[index] += 1
                     paramsSuccess[index] += 1
                     index += 1
                 paramsAttempts[index] += 1
-            except IndexError: #there are no params to track
-                print("failed")
+                print(f"failed {params[index]}")
         elif keys == "s" or keys == "S": #show statistics
             if attempts == 0: #can't divide by zero!
                 print("No stats to show yet. Do some attempts!")
@@ -86,7 +100,7 @@ def assistant(params):
                     index += 1
                 print("============================================================")
         elif keys == "h" or keys == "H": #help menu
-            print("Success: just press enter!\nFailure: F\nShow current stats: S")
+            print("Success: just press enter!\nFailure: F\nShow current stats: S\nShow/edit paramaters: P")
             print("Quit and return to region select: Q")
         else:
             print("Bad input, try again.")
