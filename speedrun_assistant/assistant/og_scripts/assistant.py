@@ -6,7 +6,6 @@
 #program and is provided with a string describing the current trick. The user is given the
 #option to specify extra parameters to track during the session, then assistantWrapper()
 #passes control to assistant(), where the actual tracking is done.
-from exceptions import ChoiceException
 
 #wrapper function for assistant; takes a string when it is called elsewhere in the program and gives the user the choice to track extra parameters in the assistant
 def assistantWrapper(trickName):

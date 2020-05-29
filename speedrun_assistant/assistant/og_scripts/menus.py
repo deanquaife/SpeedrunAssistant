@@ -1,8 +1,8 @@
 #menus.py: contains generic functions used for menu navigation throughout the assistant
 #Author: Dean Quaife
 #last edited: 2020/03/17
-from exceptions import ChoiceException
-from assistant import assistantWrapper
+from speedrun_assistant.assistant.og_scripts.exceptions import ChoiceException
+from speedrun_assistant.assistant.og_scripts.assistant import assistantWrapper
 
 #regionList values match keys in trickDict. Both are used to construct game-specific menus
 regionList = ["Kokiri Forest", "Hyrule Field", "Kakariko Village"]
