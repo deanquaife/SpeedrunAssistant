@@ -13,13 +13,13 @@ def assistantWrapper(trickName):
     #helper function to build list of extra parameters to assistant if any are input
     def list_Maker(params, keys):
         params.append(keys)
-        if len(params) < 2: #if max allowed parameters is reached, stop
-            keys = input(f"Type an extra parameter to track or just press enter(Max 2, current {str(len(params))})")
+        if len(params) < 5: #if max allowed parameters is reached, stop
+            keys = input(f"Type an extra parameter to track or just press enter(Max 5, current {str(len(params))})")
             if keys != "": #if user does not want more parameters, stop
                 list_Maker(params, keys)
     
     print(f"====================\n{trickName}\n====================")
-    keys = input("Type an extra parameter to track or just press enter(Max 2)")
+    keys = input("Type an extra parameter to track or just press enter(Max 5)")
     params = []
     if keys != "": #if there are extra params, switch to helper function
         list_Maker(params, keys)
@@ -33,7 +33,6 @@ def assistant(params):
     success = 0
     paramsAttempts = []
     paramsSuccess = []
-    keys = None
 
     if len(params) > 0: #if user created their own parameters, add stat tracking for them
         for param in params:
@@ -49,81 +48,59 @@ def assistant(params):
         elif keys == "": #successful attempt
             attempts += 1
             success += 1
+            index = 0
+            while index < len(params): #on a success, assume each section was attempted and completed
+                paramsAttempts[index] += 1
+                paramsSuccess[index] += 1
+                index += 1
             print("easy")
-        elif keys == "f" or keys =="F": #failed attempt
+        elif keys == "f" or keys =="F": #failed attempt; user can specify which part using params
             attempts += 1
-            print("failed")
-        elif keys == "1": #attempt at param1
             try:
-                params[0]
-            except IndexError:
-                print("This parameter does not exist.") #can't track what isn't there!
+                params[0] #check whether params exist
+            except IndexError: #there are no params to track
+                print("failed")
             else:
                 error = True
                 while error:
-                    subkey = input("Did you succeed?")
-                    if subkey == "": #success
-                        attempts += 1
-                        success += 1
-                        paramsAttempts[0] += 1
-                        paramsSuccess[0] += 1
-                        print("easy")
-                        error = False
-                    elif subkey == "f" or subkey == "F": #fail
-                        attempts += 1
-                        paramsAttempts[0] += 1
-                        print("failed")
-                        error = False
-                    else:
-                        print("Press enter for success, F for failure.")
-        elif keys == "2": #attempt at param2
-            try:
-                params[1]
-            except IndexError:
-                print("This parameter does not exist.") #can't track what isn't there!
-            else:
-                error = True
-                while error:
-                    subkey = input("Did you succeed?")
-                    if subkey == "": #success
-                        attempts += 1
-                        success += 1
-                        paramsAttempts[1] += 1
-                        paramsSuccess[1] += 1
-                        print("easy")
-                        error = False
-                    elif subkey == "f" or subkey == "F": #fail
-                        attempts += 1
-                        paramsAttempts[1] += 1
-                        print("failed")
-                        error = False
-                    else:
-                        print("Press enter for success, F for failure.")
+                    try:
+                        paramNo = 1
+                        print("Where did you fail?")
+                        for param in params:
+                            print(f"{paramNo}. {param}")
+                            paramNo += 1
+                        subkey = input()
+                        params[int(subkey) - 1] #sanitises input
+                        if int(subkey) == 0: #params[-1] won't raise an IndexError
+                            print("Number must be one of the parameters displayed.")
+                        else:
+                            error = False
+                    except ValueError:
+                        print("Input must be a number.")
+                    except IndexError:
+                        print("Number must be one of the parameters displayed.")
+                index = 0
+                while (index < int(subkey) - 1):
+                    paramsAttempts[index] += 1
+                    paramsSuccess[index] += 1
+                    index += 1
+                paramsAttempts[index] += 1
+                print(f"failed {params[index]}")
         elif keys == "s" or keys == "S": #show statistics
             if attempts == 0: #can't divide by zero!
                 print("No stats to show yet. Do some attempts!")
             else:
-                print(f"====================\nTotal attempts: {str(attempts)} | Success rate: {str(round(success/attempts*100, 2))}%")
-                #show stats for params
-                try:
-                    if paramsAttempts[0] == 0: #can't divide by zero!
-                        pass
+                print(f"============================================================\nTotal attempts: {str(attempts)} | Success rate: {str(round(success/attempts*100, 2))}%")
+                index = 0
+                for param in params: #show stats for params if they exist
+                    if paramsAttempts[index] > 0:
+                        print(f"{param} has been attempted {paramsAttempts[index]} times | Success rate: {str(round(paramsSuccess[index]/paramsAttempts[index]*100, 2))}%")
                     else:
-                        print(f"{params[0]}: {str(paramsAttempts[0])} | Success rate: {str(round(paramsSuccess[0]/paramsAttempts[0]*100, 2))}%")
-                    if paramsAttempts[1] == 0: #can't divide by zero!
-                        pass
-                    else:
-                        print(f"{params[1]}: {str(paramsAttempts[1])} | Success rate: {str(round(paramsSuccess[1]/paramsAttempts[1]*100, 2))}%")
-                except IndexError:
-                    pass
-                print("====================")
+                        print(f"{param} has not been attempted yet.")
+                    index += 1
+                print("============================================================")
         elif keys == "h" or keys == "H": #help menu
-            print("Success: just press enter!\nFailure: F\nShow current stats: S")
-            try:
-                print(f"Attempt with {params[0]}: 1")
-                print(f"Attempt with {params[1]}: 2")
-            except IndexError:
-                pass
+            print("Success: just press enter!\nFailure: F\nShow current stats: S\nShow/edit paramaters: P")
             print("Quit and return to region select: Q")
         else:
             print("Bad input, try again.")
